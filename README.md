@@ -23,7 +23,7 @@ import { to, toAll } from 'to-await';
 
 ### CommonJS
 ```js
-const {to, toAll } = require('to-await');
+const { to, toAll } = require('to-await');
 ```
 
 #### Promise Example
