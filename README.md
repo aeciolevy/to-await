@@ -64,3 +64,37 @@ const secondTest = async () => {
 
 secondTest();
 ```
+
+### Where it might help you
+In this case below, if you want to use a try catch to wrap you function, you are not able to throw an error inside of the callback/Promise since you are inside of another scope.
+This is an example from [nodejs](https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback) docs.
+```js
+const fs = require('fs');
+const { promifisy } = require('util');
+
+const writeAsync = promisify(fs.writeFile);
+const data = new Uint8Array(Buffer.from('Hello Node.js'));
+
+function foo() {
+    try {
+        fs.writeFile('message.txt', data, (err) => {
+            // this throw will not be catch by the throw
+            // because you are inside the callback
+            if (err) throw err;
+            console.log('The file has been saved!');
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function fooNicer() {
+    try {
+        const [error] = await to(writeAsync('message.txt', data, ));
+        if (error) {
+            throw error;
+        }
+        console.log('The file has been saved!');
+    } catch (err)
+}
+```
