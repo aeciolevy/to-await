@@ -4,8 +4,8 @@
   "description": "\"Wrapper on promise to return you a destructured version with error or not.\"",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx babel --watch src/ -d dist --presets=babel-preset-minify",
-    "prepare": "npm run build",
+    "build": "npx babel src/ -d dist --presets=babel-preset-minify",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

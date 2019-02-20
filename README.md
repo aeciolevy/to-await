@@ -1,10 +1,10 @@
 # To-await
 
-To-await is a good way to write Async code as Sync.
+To-await is an efficient and clean way to write Asynchronous code as Synchronous code.
 
-It it based on this article [How to write async await without try-catch blocks in Javascript](https://blog.grossman.io/how-to-write-async-await-without-try-catch-blocks-in-javascript/) and it has the only addition that we support Promise.All.
+It it based on this article - [How to write async await without try-catch blocks in Javascript](https://blog.grossman.io/how-to-write-async-await-without-try-catch-blocks-in-javascript/) it also has the only addition that we support Promise.All.
 
-I have been using this more than an year in production. It is pretty simple approach to avoid callback hell and promise chain. Furthermore, I found my self nesting try and catch and that was the main reason that I started to use it.
+I have been using this technique for more than a year in production. It is a pretty simple approach to avoid callback hell and promise chains. Furthermore, I found my self nesting try and catch. These are the primary cases where this package alleviates issues.
 
 ## Installation
 ```
