@@ -29,8 +29,8 @@ const firstPassTest = async () => {
 const secondTest = async () => {
   const arrayOfPromises = array => array.map(async (el, index) => 1 + index);
   const promises = arrayOfPromises([1, 2, 3, 4, 5, 6, 7]);
-  let allResponse = await toAll(promises);
-  console.log(`error: ${allResponse.error}, data: ${allResponse.data}`);
+  const { error, data } = await toAll(promises);
+  console.log(`error: ${error}, data: ${data}`);
 };
 
 firstPassTest();
