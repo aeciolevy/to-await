@@ -1,9 +1,3 @@
-import { ToResult } from "./types";
-
-function to<T>(promise: Promise<T>): Promise<ToResult<T>> {
-  return promise
-    .then(value => ({ error: undefined, data: value }))
-    .catch(reason => ({ error: reason, data: undefined }));
+export function to(promise: Promise<any>): Promise<any[]> {
+  return promise.then(data => [null, data]).catch(error => [error, null]);
 }
-
-export default to;

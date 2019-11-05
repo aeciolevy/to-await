@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "description": "\"Wrapper on promise to return you a destructured version with error or not.\"",
   "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc --declaration",
     "prepublishOnly": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -30,6 +36,12 @@
   },
   "homepage": "https://github.com/aeciolevy/to-await#readme",
   "devDependencies": {
-    "typescript": "^3.3.3"
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "babel-preset-minify": "^0.5.0",
+    "prettier": "^1.18.2",
+    "tslint": "^6.0.0-beta0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.6.4"
   }
 }

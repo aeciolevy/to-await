@@ -1,2 +1,4 @@
-export { default as to } from "./to";
-export { default as toAll } from "./toAll";
+import { to } from "./to";
+import { toAll } from "./toAll";
+
+export { to, toAll };
