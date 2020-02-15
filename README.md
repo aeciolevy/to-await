@@ -18,7 +18,7 @@ This assume that you are using [npm](www.npmjs.com) as package manager.
 ### ES6 modules
 
 ```js
-import { to, toAll } from 'to-await';
+import { to, toAll, toAllSettled } from 'to-await';
 ```
 
 ### CommonJS
@@ -32,6 +32,9 @@ import { to, toAll } from 'to-await'
 
 const firstPassTest = async () => {
     try {
+        const return10 = () => Promise.resolve(10);
+        const rejected = () => Promise.reject(new Error("Something wrong"));
+
         let [error, result] = await to(return10());
         console.log(`error: ${error}, result: ${result}`);
 
@@ -53,17 +56,64 @@ firstPassTest();
 #### Array of Promisses
 ```js
 const { to, toAll } = require('to-await');
-
 const secondTest = async () => {
 
     const arrayOfPromises = array => array.map(async (el, index) => 1 + index);
     const promises = arrayOfPromises([1, 2, 3, 4, 5, 6, 7]);
     let [error, data] = await toAll(promises);
+    // Version 1.1.0 accept an array on to function
+    // toAll with be left for backward compatibility
+    // you can deal with the array of promises directly to the to function
+    let [error, data] = await to(promises);
     console.log(`error: ${error}, data: ${data}`);
 }
 
 secondTest();
 ```
+
+### Promise.allSettled Support
+
+```js
+const { to } from 'to-await'
+
+const promises = [Promise.resolve(1), Promise.resolve(2), Promise.reject(new Error('Something went wrong'))];
+// Version 1.1.0 has options where you can pass { allSettled: true }
+// to do the same of Promise.allSettled
+let [rejected, fulfilled] = await to(promises, { allSettled: true });
+```
+
+#### Console.log Output
+```
+
+     rejected = [{
+        status: 'rejected',
+        reason: Error: Something went wrong
+            at Object.<anonymous> (/Users/aeciolevy/npm-packages/to-await/test/index.test.ts:82:78)
+            at Object.asyncJestTest (/Users/aeciolevy/npm-packages/to-await/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+            at /Users/aeciolevy/npm-packages/to-await/node_modules/jest-jasmine2/build/queueRunner.js:43:12
+            at new Promise (<anonymous>)
+            at mapper (/Users/aeciolevy/npm-packages/to-await/node_modules/jest-jasmine2/build/queueRunner.js:26:19)
+            at /Users/aeciolevy/npm-packages/to-await/node_modules/jest-jasmine2/build/queueRunner.js:73:41
+            at processTicksAndRejections (internal/process/task_queues.js:93:5)
+      }
+    ]
+    fulfilled = [
+      { status: 'fulfilled', value: 1 },
+      { status: 'fulfilled', value: 2 }
+    ]
+
+```
+
+#### toAllSettled interface
+```js
+import { toAllSettled } from 'to-await'
+// this will produce the same output above
+// is the user option to call to with the options or call `toAllSettled`
+let mixedPromises = [Promise.resolve(1), Promise.reject(new Error('something went wrong')), Promise.resolve(2)];
+let [rejected, fulfilled] = await toAllSettled(mixedPromises);
+```
+
+
 
 ### Where it might help you
 In this case below, if you want to use a try catch to wrap you function, you are not able to throw an error inside of the callback/Promise since you are inside of another scope.
