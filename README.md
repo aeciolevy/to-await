@@ -77,9 +77,7 @@ secondTest();
 const { to } from 'to-await'
 
 const promises = [Promise.resolve(1), Promise.resolve(2), Promise.reject(new Error('Something went wrong'))];
-// Version 1.1.0 has options where you can pass { allSettled: true }
-// to do the same of Promise.allSettled
-let [rejected, fulfilled] = await to(promises, { allSettled: true });
+let [rejected, fulfilled] = await toAllSettled(promises);
 ```
 
 #### Console.log Output
@@ -107,13 +105,31 @@ let [rejected, fulfilled] = await to(promises, { allSettled: true });
 #### toAllSettled interface
 ```js
 import { toAllSettled } from 'to-await'
-// this will produce the same output above
-// is the user option to call to with the options or call `toAllSettled`
 let mixedPromises = [Promise.resolve(1), Promise.reject(new Error('something went wrong')), Promise.resolve(2)];
 let [rejected, fulfilled] = await toAllSettled(mixedPromises);
 ```
 
+### Options
+```js
+{
+    // if object, return an object with { error, data }
+    // or to toAllSettled { rejected, fulfilled }
+    parser: 'array'(default) | 'object'
+}
+```
 
+### You can destructure a object (options object)
+```js
+// to function
+const return10 = () => Promise.resolve(10);
+let {error, data} = await to(return10(), { parser: 'object'});
+// toAll function
+const promises = [Promise.resolve(1), Promise.resolve(2)];
+let { error, data } = await toAll(promises, { parser: 'object' });
+// toAllSettled function
+const promises = [Promise.resolve(1), Promise.resolve(2), Promise.reject(new Error('something wrong'))];
+let { rejected, fulfilled } = await toAll(promises, { parser: 'object' });
+```
 
 ### Where it might help you
 In this case below, if you want to use a try catch to wrap you function, you are not able to throw an error inside of the callback/Promise since you are inside of another scope.

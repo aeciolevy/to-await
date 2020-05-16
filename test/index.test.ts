@@ -1,5 +1,6 @@
 import { allSettled, toAllSettled } from '../src/toAllSettled';
-import { to } from '../src/to';
+import { to, toAll } from '../src/index';
+
 
 test('All settled test', async () => {
     let mixedPromises = [Promise.resolve(1), Promise.reject(new Error('something went wrong')), Promise.resolve(2)];
@@ -56,19 +57,17 @@ test('To function', async () => {
     expect(data).toBe(10);
 });
 
-test('To function handling an array', async () => {
-    const promises = [Promise.resolve(1), Promise.resolve(2)];
-    let [error, data] = await to(promises);
+test('To function destructing object', async () => {
+    const return10 = () => Promise.resolve(10);
+    let {error, data} = await to(return10(), { parser: 'object'});
 
     expect(error).toBe(null);
-    expect(data.length).toBe(2);
-    expect(data[0]).toBe(1);
-    expect(data[1]).toBe(2);
+    expect(data).toBe(10);
 });
 
-test('To function with allSettled', async () => {
+test('All settled with object', async () => {
     const promises = [Promise.resolve(1), Promise.resolve(2)];
-    let [rejected, fulfilled] = await to(promises, { allSettled: true });
+    let { rejected, fulfilled } = await toAllSettled(promises, { parser: 'object'});
 
     expect(rejected).toBe(null);
     expect(fulfilled.length).toBe(2);
@@ -78,9 +77,9 @@ test('To function with allSettled', async () => {
     expect(fulfilled[1].value).toBe(2);
 });
 
-test('To function with allSettled', async () => {
+test('All Settled array destructuring', async () => {
     const promises = [Promise.resolve(1), Promise.resolve(2), Promise.reject(new Error('Something went wrong'))];
-    let [rejected, fulfilled] = await to(promises, { allSettled: true });
+    let [rejected, fulfilled] = await toAllSettled(promises);
     expect(rejected[0].status).toBe('rejected');
     expect(rejected[0].reason).toBeInstanceOf(Error);
     expect(fulfilled.length).toBe(2);
@@ -90,3 +89,21 @@ test('To function with allSettled', async () => {
     expect(fulfilled[1].value).toBe(2);
 });
 
+test('To All with array ', async () => {
+    const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+    let [error, data] = await toAll(promises);
+
+    expect(error).toBe(null);
+    expect(data.length).toBe(3);
+    expect(data).toStrictEqual([1,2,3]);
+});
+
+test('To All with object', async () => {
+    const promises = [Promise.resolve(1), Promise.resolve(2)];
+    let { error, data } = await toAll(promises, { parser: 'object' });
+
+    expect(error).toBe(null);
+    expect(data.length).toBe(2);
+    expect(data[0]).toBe(1);
+    expect(data[1]).toBe(2);
+});
